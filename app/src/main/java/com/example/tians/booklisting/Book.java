@@ -34,4 +34,28 @@ public class Book {
     public String getTitle() {
         return title;
     }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public int getCoverImage() {
+        return coverImage;
+    }
+
+    private boolean hasImage() {
+        if (coverImage == 0) return false;
+        else return true;
+    }
+
+    @Override
+    public String toString() {
+        return "The book contains the following data:\n" +
+                "Title: " + getTitle() +
+                "Author: " + getAuthor() +
+                "Link: " + getUrl() +
+                "Has image: " + hasImage();
+    }
+
+
 }
