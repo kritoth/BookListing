@@ -44,8 +44,11 @@ public final class QueryUtils {
             urlConnection = (HttpURLConnection) url.openConnection();
             urlConnection.setRequestMethod("GET");
             urlConnection.connect();
+
+            Log.e(LOG_TAG, "Server Response code: " + urlConnection.getResponseCode());
+
             inputStream = urlConnection.getInputStream();
-            jsonResponse =readFromStream(inputStream);
+            jsonResponse = readFromStream(inputStream);
         }
         catch (IOException e) {
             Log.e(LOG_TAG, "Error with opening http connection: ", e);

@@ -49,8 +49,11 @@ public class MainActivity extends AppCompatActivity {
                 Log.e(LOG_TAG, "Problem with Http request: ", e);
             }
 
+            Log.e(LOG_TAG, "JSON Response is: \n" + jsonResponse + "\n");
+
             ArrayList<Book> books = (ArrayList<Book>) QueryUtils.extractBooks(jsonResponse);
 
+            Log.e(LOG_TAG, "Parsed data in 1st Book is: " + books.get(0).toString());
             return books;
         }
 
