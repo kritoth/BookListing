@@ -1,11 +1,13 @@
 package com.example.tians.booklisting;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.Button;
+import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import java.io.IOException;
 import java.net.URL;
@@ -15,23 +17,33 @@ public class MainActivity extends AppCompatActivity {
 
     private static String LOG_TAG = MainActivity.class.getName();
 
+    private EditText searchField;
+    private String searchTerm;
+
     // for testing purposes
-    private String GOOGLE_REQUEST_URL = "https://www.googleapis.com/books/v1/volumes?q=android&maxResults=3";
+    private String googleRequestUrl;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        EditText searchField = findViewById(R.id.field_search);
-        //TODO: Get the query parameters to use for creating URL request
+        searchField = findViewById(R.id.field_search);
 
-        Button searchButton = findViewById(R.id.button_search);
-        //TODO: create intent for new ListView Activity
-        //TODO: Start fetching
+        final TextView searchButton = findViewById(R.id.button_search);
 
-        BookAsyncTask asyncTask = new BookAsyncTask();
-        asyncTask.execute();
+        searchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                openResultsList(searchButton);
+
+                buildRequestUrl();
+
+                BookAsyncTask asyncTask = new BookAsyncTask();
+                asyncTask.execute();
+            }
+        });
     }
 
     /**
@@ -42,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected ArrayList<Book> doInBackground(URL... urls) {
             // Create URL object
-            URL url = QueryUtils.createUrl(GOOGLE_REQUEST_URL);
+            URL url = QueryUtils.createUrl(googleRequestUrl);
 
             // Perform HTTP request to the URL and receive a JSON response back
             String jsonResponse = "";
@@ -65,5 +77,18 @@ public class MainActivity extends AppCompatActivity {
         protected void onPostExecute(ArrayList<Book> books) {
             super.onPostExecute(books);
         }
+    }
+
+    //Build the request Url
+    private String buildRequestUrl(){
+        searchTerm = searchField.getText().toString().trim();
+        googleRequestUrl = "https://www.googleapis.com/books/v1/volumes?q=" + searchTerm + "&maxResults=3";
+        return googleRequestUrl;
+    }
+
+    //Opens the {@link NumbersActivitiy}
+    private void openResultsList(View view) {
+        Intent intent = new Intent(this, ResultActivity.class);
+        startActivity(intent);
     }
 }
