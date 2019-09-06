@@ -12,6 +12,13 @@ public class Book {
         this.coverImage = 0;
         this.url = null;
     }
+    
+    public Book(String title, String author, String url){
+        this.title = title;
+        this.author = author;
+        this.coverImage = 0;
+        this.url = url;
+    }
 
     public Book(String title, String author, int imgResource){
         this.title = title;
