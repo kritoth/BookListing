@@ -16,7 +16,7 @@ public class MainActivity extends AppCompatActivity {
     private static String LOG_TAG = MainActivity.class.getName();
 
     // for testing purposes
-    private String GOOGLE_REQUEST_URL = "https://www.googleapis.com/books/v1/volumes?q=android&maxResults=1";
+    private String GOOGLE_REQUEST_URL = "https://www.googleapis.com/books/v1/volumes?q=android&maxResults=3";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,11 +52,12 @@ public class MainActivity extends AppCompatActivity {
                 Log.e(LOG_TAG, "Problem with Http request: ", e);
             }
 
-            Log.d(LOG_TAG, "JSON Response is: \n" + jsonResponse + "\n");
+            //Log.d(LOG_TAG, "JSON Response is: \n" + jsonResponse + "\n");
 
             ArrayList<Book> books = (ArrayList<Book>) QueryUtils.extractBooks(jsonResponse);
 
-            Log.d(LOG_TAG, "Parsed data in 1st Book is: " + books.get(0).toString());
+            //Log.d(LOG_TAG, "Books queried: " + books.size() + "\nParsed data in 1st Book is: " + books.get(0).toString());
+
             return books;
         }
 
