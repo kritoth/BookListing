@@ -13,10 +13,11 @@
         android:id="@+id/field_search"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:inputType="text"
         android:hint="@string/search_me"
         android:layout_gravity="center_horizontal"/>
 
-    <Button
+    <TextView
         android:id="@+id/button_search"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
