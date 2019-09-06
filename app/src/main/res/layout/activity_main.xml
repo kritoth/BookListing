@@ -13,7 +13,7 @@
         android:id="@+id/field_search"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/search_me"
+        android:hint="@string/search_me"
         android:layout_gravity="center_horizontal"/>
 
     <Button
