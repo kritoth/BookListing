@@ -45,7 +45,7 @@ public final class QueryUtils {
             urlConnection.setRequestMethod("GET");
             urlConnection.connect();
 
-            Log.e(LOG_TAG, "Server Response code: " + urlConnection.getResponseCode());
+            Log.d(LOG_TAG, "Server Response code: " + urlConnection.getResponseCode());
 
             inputStream = urlConnection.getInputStream();
             jsonResponse = readFromStream(inputStream);
