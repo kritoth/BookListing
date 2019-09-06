@@ -83,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
     //Build the request Url
     private String buildRequestTerm(){
         searchTerm = searchField.getText().toString().trim();
-        googleRequestUrl = "https://www.googleapis.com/books/v1/volumes?q=" + searchTerm + "&maxResults=3";
+        googleRequestUrl = "https://www.googleapis.com/books/v1/volumes?q=" + searchTerm + "&maxResults=13";
         return googleRequestUrl;
     }
 

@@ -43,7 +43,7 @@ public class BookAdapter extends ArrayAdapter<Book> {
         TextView authorsTextView = (TextView) listItemView.findViewById(R.id.authors);
         // Get the authors from the current Book object and
         // set this text on the name TextView
-        titleTextView.setText(currBook.getAuthors());
+        authorsTextView.setText(currBook.getAuthors());
 
         // Return the whole list item layout (containing 2 TextViews)
         // so that it can be shown in the ListView
