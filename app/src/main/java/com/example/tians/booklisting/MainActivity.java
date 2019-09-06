@@ -18,6 +18,7 @@ public class MainActivity extends AppCompatActivity {
     private static String LOG_TAG = MainActivity.class.getName();
 
     private EditText searchField;
+    private TextView searchButton;
     private String searchTerm;
 
     // for testing purposes
@@ -30,15 +31,13 @@ public class MainActivity extends AppCompatActivity {
 
         searchField = findViewById(R.id.field_search);
 
-        final TextView searchButton = findViewById(R.id.button_search);
+        searchButton = findViewById(R.id.button_search);
 
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                openResultsList(searchButton);
-
-                buildRequestUrl();
+                buildRequestTerm();
 
                 BookAsyncTask asyncTask = new BookAsyncTask();
                 asyncTask.execute();
@@ -63,7 +62,6 @@ public class MainActivity extends AppCompatActivity {
             } catch (IOException e) {
                 Log.e(LOG_TAG, "Problem with Http request: ", e);
             }
-
             //Log.d(LOG_TAG, "JSON Response is: \n" + jsonResponse + "\n");
 
             ArrayList<Book> books = (ArrayList<Book>) QueryUtils.extractBooks(jsonResponse);
@@ -75,20 +73,26 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(ArrayList<Book> books) {
-            super.onPostExecute(books);
+            if (books == null || books.size()==0) {
+                return;
+            }
+            openResultsList(searchButton, books);
         }
     }
 
     //Build the request Url
-    private String buildRequestUrl(){
+    private String buildRequestTerm(){
         searchTerm = searchField.getText().toString().trim();
         googleRequestUrl = "https://www.googleapis.com/books/v1/volumes?q=" + searchTerm + "&maxResults=3";
         return googleRequestUrl;
     }
 
-    //Opens the {@link NumbersActivitiy}
-    private void openResultsList(View view) {
+    //Opens the {@link ResultActivitiy} and sends the queried ArrayList of {@link Book}s with it
+    private void openResultsList(View view, ArrayList<Book> books) {
         Intent intent = new Intent(this, ResultActivity.class);
+        Bundle queriedBooks = new Bundle();
+        queriedBooks.putParcelableArrayList("books", books);
+        intent.putExtras(queriedBooks);
         startActivity(intent);
     }
 }

@@ -1,43 +1,53 @@
 package com.example.tians.booklisting;
 
-public class Book {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class Book implements Parcelable{
     private String title;
-    private String[] author;
+    private String[] authors;
     private int coverImage;
     private String url;
 
-    public Book(String title, String[] author){
+    public Book(String title, String[] authors){
         this.title = title;
-        this.author = author;
+        this.authors = authors;
         this.coverImage = 0;
         this.url = null;
     }
 
-    public Book(String title, String[] author, String url){
+    public Book(String title, String[] authors, String url){
         this.title = title;
-        this.author = author;
+        this.authors = authors;
         this.coverImage = 0;
         this.url = url;
     }
 
-    public Book(String title, String[] author, int imgResource){
+    public Book(String title, String[] authors, int imgResource){
         this.title = title;
-        this.author = author;
+        this.authors = authors;
         this.coverImage = imgResource;
         this.url = null;
     }
 
-    public Book(String title, String[] author, int imgResource, String url){
+    public Book(String title, String[] authors, int imgResource, String url){
         this.title = title;
-        this.author = author;
+        this.authors = authors;
         this.coverImage = imgResource;
         this.url = url;
+    }
+
+    public Book(Parcel source) {
+        this.title = source.readString();
+        this.authors = source.createStringArray();
+        this.coverImage = source.readInt();
+        this.url = source.readString();
     }
 
     public String getAuthors() {
         StringBuilder sb = new StringBuilder();
-        for(int i=0;i<author.length;i++){
-            sb.append(author[i] + ", ");
+        for(int i = 0; i< authors.length; i++){
+            sb.append(authors[i] + ", ");
         }
         return sb.substring(0, sb.length()-2).toString();
     }
@@ -68,4 +78,27 @@ public class Book {
     }
 
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(title);
+        dest.writeStringArray(authors);
+        dest.writeInt(coverImage);
+        dest.writeString(url);
+    }
+
+    public static final Parcelable.Creator<Book> CREATOR
+            = new Parcelable.Creator<Book>() {
+        public Book createFromParcel(Parcel in) {
+            return new Book(in);
+        }
+
+        public Book[] newArray(int size) {
+            return new Book[size];
+        }
+    };
 }

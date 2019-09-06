@@ -1,8 +1,11 @@
 package com.example.tians.booklisting;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.ListView;
+
+import java.util.ArrayList;
 
 public class ResultActivity extends AppCompatActivity {
 
@@ -11,9 +14,13 @@ public class ResultActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.list_activity);
 
+        // Retrieve the ArrayList of {@link Book}s sent by the calling Activity
+        Bundle bdl = getIntent().getExtras();
+        ArrayList<Book> books = bdl.getParcelableArrayList("books");
+
         // Create an {@link BookAdapter}, whose data source is a list of {@link Book}s. The
         // adapter knows how to create list items for each item in the list.
-        //final BookAdapter adapter = new BookAdapter(this, books);
+        BookAdapter adapter = new BookAdapter(getApplicationContext(), 0, books);
 
         // Find the {@link ListView} object in the view hierarchy of the {@link Activity}.
         // There should be a {@link ListView} with the view ID called list, which is declared in the
@@ -22,6 +29,6 @@ public class ResultActivity extends AppCompatActivity {
 
         // Make the {@link ListView} use the {@link BookAdapter} we created above, so that the
         // {@link ListView} will display list items for each {@link Book} in the list.
-        //listView.setAdapter(adapter);
+        listView.setAdapter(adapter);
     }
 }
