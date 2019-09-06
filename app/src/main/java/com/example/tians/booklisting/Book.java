@@ -2,40 +2,44 @@ package com.example.tians.booklisting;
 
 public class Book {
     private String title;
-    private String author;
+    private String[] author;
     private int coverImage;
     private String url;
 
-    public Book(String title, String author){
+    public Book(String title, String[] author){
         this.title = title;
         this.author = author;
         this.coverImage = 0;
         this.url = null;
     }
-    
-    public Book(String title, String author, String url){
+
+    public Book(String title, String[] author, String url){
         this.title = title;
         this.author = author;
         this.coverImage = 0;
         this.url = url;
     }
 
-    public Book(String title, String author, int imgResource){
+    public Book(String title, String[] author, int imgResource){
         this.title = title;
         this.author = author;
         this.coverImage = imgResource;
         this.url = null;
     }
 
-    public Book(String title, String author, int imgResource, String url){
+    public Book(String title, String[] author, int imgResource, String url){
         this.title = title;
         this.author = author;
         this.coverImage = imgResource;
         this.url = url;
     }
 
-    public String getAuthor() {
-        return author;
+    public String getAuthors() {
+        StringBuilder sb = new StringBuilder();
+        for(int i=0;i<author.length;i++){
+            sb.append(author[i] + ", ");
+        }
+        return sb.substring(0, sb.length()-2).toString();
     }
 
     public String getTitle() {
@@ -57,11 +61,10 @@ public class Book {
 
     @Override
     public String toString() {
-        return "The book contains the following data:\n" +
-                "Title: " + getTitle() +
-                "Author: " + getAuthor() +
-                "Link: " + getUrl() +
-                "Has image: " + hasImage();
+        return "\nTitle: " + getTitle() +
+                "\nAuthor: " + getAuthors() +
+                "\nLink: " + getUrl() +
+                "\nHas image: " + hasImage();
     }
 
 

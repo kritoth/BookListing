@@ -2,6 +2,10 @@ package com.example.tians.booklisting;
 
 import android.util.Log;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -87,6 +91,29 @@ public final class QueryUtils {
      */
     public static List<Book> extractBooks(String jsonResponse) {
         List<Book> books = new ArrayList<Book>();
+
+        try {
+            JSONObject response = new JSONObject(jsonResponse);
+            JSONArray items = response.getJSONArray("items");
+            for (int i=0; i<items.length(); i++){
+                JSONObject volume = items.getJSONObject(i);
+                JSONObject volumeInfo = volume.getJSONObject("volumeInfo");
+
+                String title = volumeInfo.getString("title");
+
+                JSONArray authors = volumeInfo.getJSONArray("authors");
+                String[] authorsToBook = new String[authors.length()];
+                for(int j=0;j<authors.length();j++){
+                    authorsToBook[j] = authors.getString(j);
+                }
+
+                String url = volumeInfo.getString("infoLink");
+
+                books.add(new Book(title,authorsToBook,url));
+            }
+        } catch (JSONException e) {
+            Log.e(LOG_TAG, "Error with parsing JSON: ", e);
+        }
 
         return books;
     }
