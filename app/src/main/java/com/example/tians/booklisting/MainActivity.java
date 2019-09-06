@@ -30,6 +30,8 @@ public class MainActivity extends AppCompatActivity {
         //TODO: create intent for new ListView Activity
         //TODO: Start fetching
 
+        BookAsyncTask asyncTask = new BookAsyncTask();
+        asyncTask.execute();
     }
 
     /**
