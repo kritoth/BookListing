@@ -89,7 +89,7 @@ public class Book implements Parcelable{
 
     public Book(Parcel p){
         this.title = p.readString();
-        this.authors = (String[]) p.readArray(String.class.getClassLoader());
+        this.authors = p.createStringArray(); //(String[]) p.readArray(String.class.getClassLoader());
         this.coverImage = (Bitmap) p.readValue(Bitmap.class.getClassLoader());
         this.url = p.readString();
     }
