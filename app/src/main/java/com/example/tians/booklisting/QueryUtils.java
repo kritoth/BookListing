@@ -1,5 +1,7 @@
 package com.example.tians.booklisting;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.Log;
 
 import org.json.JSONArray;
@@ -107,14 +109,52 @@ public final class QueryUtils {
                     authorsToBook[j] = authors.getString(j);
                 }
 
+                JSONObject images = volumeInfo.getJSONObject("imageLinks");
+                Bitmap thumbnail = null;
+                try {
+                    thumbnail = getBitmapFromUrl(images.getString("smallThumbnail"));
+
+                } catch (IOException e) {
+                    Log.e(LOG_TAG, "Error with inputstream for image: ", e);
+                }
+
                 String url = volumeInfo.getString("infoLink");
 
-                books.add(new Book(title,authorsToBook,url));
+                books.add(new Book(title, authorsToBook, thumbnail, url));
             }
         } catch (JSONException e) {
             Log.e(LOG_TAG, "Error with parsing JSON: ", e);
         }
 
         return books;
+    }
+
+    private static Bitmap getBitmapFromUrl(String source) throws IOException {
+        Bitmap bmp = null;
+
+        URL url = createUrl(source);
+
+        HttpURLConnection connection = null;
+        InputStream iStream = null;
+
+        try {
+            connection = (HttpURLConnection) url.openConnection();
+            connection.connect();
+
+            //Log.d(LOG_TAG, "Server Response code for image: " + connection.getResponseCode());
+
+            iStream = connection.getInputStream();
+            bmp = BitmapFactory.decodeStream(iStream);
+
+        }
+        catch (IOException e) {
+            Log.e(LOG_TAG, "Error with opening http connection for image: ", e);
+        }
+        finally {
+            if(connection != null) connection.disconnect();
+            if(iStream != null) iStream.close();
+        }
+
+        return bmp;
     }
 }

@@ -1,47 +1,42 @@
 package com.example.tians.booklisting;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Parcel;
 import android.os.Parcelable;
 
 public class Book implements Parcelable{
     private String title;
     private String[] authors;
-    private int coverImage;
+    private Bitmap coverImage;
     private String url;
-
+/*
     public Book(String title, String[] authors){
         this.title = title;
         this.authors = authors;
-        this.coverImage = 0;
+        this.coverImage = null;
         this.url = null;
     }
 
     public Book(String title, String[] authors, String url){
         this.title = title;
         this.authors = authors;
-        this.coverImage = 0;
+        this.coverImage = null;
         this.url = url;
     }
 
-    public Book(String title, String[] authors, int imgResource){
+    public Book(String title, String[] authors, Bitmap imgResource){
         this.title = title;
         this.authors = authors;
         this.coverImage = imgResource;
         this.url = null;
     }
-
-    public Book(String title, String[] authors, int imgResource, String url){
+*/
+    public Book(String title, String[] authors, Bitmap imgResource, String url){
         this.title = title;
         this.authors = authors;
         this.coverImage = imgResource;
         this.url = url;
-    }
-
-    public Book(Parcel source) {
-        this.title = source.readString();
-        this.authors = source.createStringArray();
-        this.coverImage = source.readInt();
-        this.url = source.readString();
     }
 
     public String getAuthors() {
@@ -60,12 +55,12 @@ public class Book implements Parcelable{
         return url;
     }
 
-    public int getCoverImage() {
+    public Bitmap getCoverImage() {
         return coverImage;
     }
 
-    private boolean hasImage() {
-        if (coverImage == 0) return false;
+    public boolean hasImage() {
+        if (coverImage == null) return false;
         else return true;
     }
 
@@ -77,6 +72,7 @@ public class Book implements Parcelable{
                 "\nHas image: " + hasImage();
     }
 
+    //Below are Parcelable constructors and methods implemented
 
     @Override
     public int describeContents() {
@@ -87,8 +83,15 @@ public class Book implements Parcelable{
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(title);
         dest.writeStringArray(authors);
-        dest.writeInt(coverImage);
+        dest.writeValue(coverImage);
         dest.writeString(url);
+    }
+
+    public Book(Parcel p){
+        this.title = p.readString();
+        this.authors = (String[]) p.readArray(String.class.getClassLoader());
+        this.coverImage = (Bitmap) p.readValue(Bitmap.class.getClassLoader());
+        this.url = p.readString();
     }
 
     public static final Parcelable.Creator<Book> CREATOR
