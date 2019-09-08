@@ -15,8 +15,8 @@ public class ResultActivity extends AppCompatActivity {
         setContentView(R.layout.list_activity);
 
         // Retrieve the ArrayList of {@link Book}s sent by the calling Activity
-        Bundle bdl = getIntent().getExtras();
-        ArrayList<Book> books = bdl.getParcelableArrayList("books");
+        Intent intent = getIntent();
+        ArrayList<Book> books = intent.getParcelableArrayListExtra("books");
 
         // Create an {@link BookAdapter}, whose data source is a list of {@link Book}s. The
         // adapter knows how to create list items for each item in the list.

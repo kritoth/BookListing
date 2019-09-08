@@ -109,18 +109,21 @@ public final class QueryUtils {
                     authorsToBook[j] = authors.getString(j);
                 }
 
+                String url = volumeInfo.getString("infoLink");
+                /*
                 JSONObject images = volumeInfo.getJSONObject("imageLinks");
                 Bitmap thumbnail = null;
                 try {
                     thumbnail = getBitmapFromUrl(images.getString("smallThumbnail"));
+                    thumbnail = Bitmap.createScaledBitmap(thumbnail, 120, 120, false);
 
                 } catch (IOException e) {
                     Log.e(LOG_TAG, "Error with inputstream for image: ", e);
                 }
 
-                String url = volumeInfo.getString("infoLink");
-
                 books.add(new Book(title, authorsToBook, thumbnail, url));
+                */
+                books.add(new Book(title, authorsToBook, url));
             }
         } catch (JSONException e) {
             Log.e(LOG_TAG, "Error with parsing JSON: ", e);
@@ -129,6 +132,12 @@ public final class QueryUtils {
         return books;
     }
 
+    /**
+     * Parsing Bitmap from url source
+     * @param source as String
+     * @return a Bitmap
+     * @throws IOException
+     */
     private static Bitmap getBitmapFromUrl(String source) throws IOException {
         Bitmap bmp = null;
 

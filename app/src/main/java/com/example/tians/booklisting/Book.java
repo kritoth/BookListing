@@ -18,13 +18,6 @@ public class Book implements Parcelable{
         this.url = null;
     }
 
-    public Book(String title, String[] authors, String url){
-        this.title = title;
-        this.authors = authors;
-        this.coverImage = null;
-        this.url = url;
-    }
-
     public Book(String title, String[] authors, Bitmap imgResource){
         this.title = title;
         this.authors = authors;
@@ -32,6 +25,13 @@ public class Book implements Parcelable{
         this.url = null;
     }
 */
+        public Book(String title, String[] authors, String url){
+            this.title = title;
+            this.authors = authors;
+            this.coverImage = null;
+            this.url = url;
+        }
+
     public Book(String title, String[] authors, Bitmap imgResource, String url){
         this.title = title;
         this.authors = authors;

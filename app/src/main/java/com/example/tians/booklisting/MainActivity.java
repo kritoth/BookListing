@@ -90,9 +90,7 @@ public class MainActivity extends AppCompatActivity {
     //Opens the {@link ResultActivitiy} and sends the queried ArrayList of {@link Book}s with it
     private void openResultsList(View view, ArrayList<Book> books) {
         Intent intent = new Intent(this, ResultActivity.class);
-        Bundle queriedBooks = new Bundle();
-        queriedBooks.putParcelableArrayList("books", books);
-        intent.putExtras(queriedBooks);
+        intent.putParcelableArrayListExtra("books", books);
         startActivity(intent);
     }
 }
