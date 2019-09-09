@@ -16,11 +16,15 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public final class QueryUtils {
 
     private static String LOG_TAG = QueryUtils.class.getName();
+
+    // Store {@link Bitmap}s of {@link Book}s' thumbnail image parsed from the URL
+    public static HashMap<String, Bitmap> bookCoverImgs;
 
     /**
      * Returns new URL object from the given string URL.
@@ -87,12 +91,17 @@ public final class QueryUtils {
     }
 
     /**
-     * Extracts a List of Books from the JSON response of the server
+     * Extracts data of Books from the JSON response of the server and creates {@link Book} objects from them.
+     * These objects are stored into a {@link List<Book>} and returned.
+     * In addition the data for the coverimage of the Book is stored locally instead of into the Book object as a {@link Bitmap}.
+     * This is to provide memory efficient sending of images between Activities.
      * @param jsonResponse containing the JSON
      * @return a List of Book objects are in the JSON response
      */
     public static List<Book> extractBooks(String jsonResponse) {
         List<Book> books = new ArrayList<Book>();
+        // To ensure a new HashMap of images is created for each request not to let it grow too big
+        bookCoverImgs.clear();
 
         try {
             JSONObject response = new JSONObject(jsonResponse);
@@ -100,6 +109,8 @@ public final class QueryUtils {
             for (int i=0; i<items.length(); i++){
                 JSONObject volume = items.getJSONObject(i);
                 JSONObject volumeInfo = volume.getJSONObject("volumeInfo");
+
+                String id = volumeInfo.getString("id");
 
                 String title = volumeInfo.getString("title");
 
@@ -110,22 +121,19 @@ public final class QueryUtils {
                 }
 
                 String url = volumeInfo.getString("infoLink");
-                /*
-                JSONObject images = volumeInfo.getJSONObject("imageLinks");
-                Bitmap thumbnail = null;
-                try {
-                    thumbnail = getBitmapFromUrl(images.getString("smallThumbnail"));
-                    thumbnail = Bitmap.createScaledBitmap(thumbnail, 120, 120, false);
 
-                } catch (IOException e) {
+                // Parsing Bitmap from a URL resulting from a JSON parsing by establishing a network connection and store it to the field HashMap
+                try {
+                    extractImages(volumeInfo, id);
+                }
+                catch (IOException e) {
                     Log.e(LOG_TAG, "Error with inputstream for image: ", e);
                 }
 
-                books.add(new Book(title, authorsToBook, thumbnail, url));
-                */
-                books.add(new Book(title, authorsToBook, url));
+                books.add(new Book(id, title, authorsToBook, url));
             }
-        } catch (JSONException e) {
+        }
+        catch (JSONException e) {
             Log.e(LOG_TAG, "Error with parsing JSON: ", e);
         }
 
@@ -133,8 +141,29 @@ public final class QueryUtils {
     }
 
     /**
-     * Parsing Bitmap from url source
-     * @param source as String
+     * Extract the thumbnail image as a {@link Bitmap} from the {@link URL} stored inside the given JSON object.
+     * The extracted image then will be stored into a HashMap as a value for the key of the corresponding {@link Book}'s id
+     * @param source The JSON object which stores the URL pointing to the thumbnail image
+     * @param key The String id of the {@link Book} to which the image should correspond to
+     * @throws IOException if networking is unsuccessful
+     */
+    private static void extractImages(JSONObject source, String key) throws IOException {
+
+        Bitmap thumbnail = null;
+        JSONObject images = null;
+        try {
+            images = source.getJSONObject("imageLinks");
+            thumbnail = getBitmapFromUrl(images.getString("smallThumbnail"));
+            thumbnail = Bitmap.createScaledBitmap(thumbnail, 120, 120, false);
+        } catch (JSONException e) {
+            Log.e(LOG_TAG, "Error with parsing JSON for image: ", e);
+        }
+        bookCoverImgs.put(key, thumbnail);
+    }
+
+    /**
+     * Parsing {@link Bitmap} from url source
+     * @param source A url as String
      * @return a Bitmap
      * @throws IOException
      */
@@ -154,7 +183,6 @@ public final class QueryUtils {
 
             iStream = connection.getInputStream();
             bmp = BitmapFactory.decodeStream(iStream);
-
         }
         catch (IOException e) {
             Log.e(LOG_TAG, "Error with opening http connection for image: ", e);
@@ -165,5 +193,14 @@ public final class QueryUtils {
         }
 
         return bmp;
+    }
+
+    /**
+     * Provides the cover image of the {@link Book} of which id has been provided
+     * @param key The id of the Book
+     * @return the {@link Bitmap} thumbnail
+     */
+    public static Bitmap getBooksImage(String key){
+        return bookCoverImgs.get(key);
     }
 }
