@@ -6,37 +6,26 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 public class Book implements Parcelable{
+    private String id;
     private String title;
     private String[] authors;
-    private Bitmap coverImage;
+    //private Bitmap coverImage;
     private String url;
-/*
-    public Book(String title, String[] authors){
-        this.title = title;
-        this.authors = authors;
-        this.coverImage = null;
-        this.url = null;
-    }
 
-    public Book(String title, String[] authors, Bitmap imgResource){
+    public Book(String id, String title, String[] authors, String url){
+        this.id = id;
         this.title = title;
         this.authors = authors;
-        this.coverImage = imgResource;
-        this.url = null;
-    }
-*/
-        public Book(String title, String[] authors, String url){
-            this.title = title;
-            this.authors = authors;
-            this.coverImage = null;
-            this.url = url;
-        }
-
-    public Book(String title, String[] authors, Bitmap imgResource, String url){
-        this.title = title;
-        this.authors = authors;
-        this.coverImage = imgResource;
+        //this.coverImage = null;
         this.url = url;
+    }
+
+    public String getId(){
+        return id;
+    }
+
+    public String getTitle() {
+        return title;
     }
 
     public String getAuthors() {
@@ -47,14 +36,11 @@ public class Book implements Parcelable{
         return sb.substring(0, sb.length()-2).toString();
     }
 
-    public String getTitle() {
-        return title;
-    }
-
     public String getUrl() {
         return url;
     }
 
+    /*
     public Bitmap getCoverImage() {
         return coverImage;
     }
@@ -63,13 +49,14 @@ public class Book implements Parcelable{
         if (coverImage == null) return false;
         else return true;
     }
-
+*/
     @Override
     public String toString() {
-        return "\nTitle: " + getTitle() +
-                "\nAuthor: " + getAuthors() +
-                "\nLink: " + getUrl() +
-                "\nHas image: " + hasImage();
+        return "\nId: " + getId() +
+                "\nTitle: " + getTitle() +
+                "\nAuthor(s): " + getAuthors() +
+                "\nLink: " + getUrl();
+        //+"\nHas image: " + hasImage();
     }
 
     //Below are Parcelable constructors and methods implemented
@@ -81,16 +68,18 @@ public class Book implements Parcelable{
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(id);
         dest.writeString(title);
         dest.writeStringArray(authors);
-        dest.writeValue(coverImage);
+        //dest.writeValue(coverImage);
         dest.writeString(url);
     }
 
     public Book(Parcel p){
+        this.id = p.readString();
         this.title = p.readString();
         this.authors = p.createStringArray(); //(String[]) p.readArray(String.class.getClassLoader());
-        this.coverImage = (Bitmap) p.readValue(Bitmap.class.getClassLoader());
+        //this.coverImage = (Bitmap) p.readValue(Bitmap.class.getClassLoader());
         this.url = p.readString();
     }
 
