@@ -23,11 +23,11 @@ public final class QueryUtils {
 
     private static String LOG_TAG = QueryUtils.class.getName();
 
-    // Store {@link Bitmap}s of {@link Book}s' thumbnail image parsed from the URL
+    // Store {@link Bitmap}s of {@link Book}s' thumbnail image parsed from the URL for each query
     public static HashMap<String, Bitmap> bookCoverImgs;
 
     /**
-     * Returns new URL object from the given string URL.
+     * Returns new {@link URL} object from the given String url
      */
     public static URL createUrl(String urlString) {
         URL url = null;
@@ -43,7 +43,7 @@ public final class QueryUtils {
     /**
      * Creates a String json from the response from the url
      * @param url where the request is to be sent
-     * @return jsonResponse received from the url
+     * @return String jsonResponse parsed from the url
      */
     public static String makeHttpRequest(URL url) throws IOException {
         String jsonResponse = "";
@@ -162,10 +162,10 @@ public final class QueryUtils {
     }
 
     /**
-     * Parsing {@link Bitmap} from url source
+     * Parsing {@link Bitmap} from url source provided as a String
      * @param source A url as String
      * @return a Bitmap
-     * @throws IOException
+     * @throws IOException if connection doesn't work
      */
     private static Bitmap getBitmapFromUrl(String source) throws IOException {
         Bitmap bmp = null;

@@ -47,13 +47,10 @@ public class BookAdapter extends ArrayAdapter<Book> {
         // set this text on the name TextView
         authorsTextView.setText(currBook.getAuthors());
 
-        /*
         // Find the ImageView in the list_item.xml layout with the ID title
         ImageView thumbnailImgView = (ImageView) listItemView.findViewById(R.id.img);
-        // Get the titel from the current Book object and
-        // set this text on the name TextView
-        Bitmap thumbnail = currBook.getCoverImage();
-        */
+        // Get the {@Bitmap} of the {@Book} from the {@link QueryUtils.getBooksImage(String key)} and sets it the ImageView
+        thumbnailImgView.setImageBitmap(QueryUtils.getBooksImage(currBook.getId()));
 
         // Return the whole list item layout (containing 2 TextViews)
         // so that it can be shown in the ListView
