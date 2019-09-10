@@ -21,10 +21,10 @@ import java.util.List;
 
 public final class QueryUtils {
 
-    private static String LOG_TAG = QueryUtils.class.getName();
+    private static final String LOG_TAG = QueryUtils.class.getName();
 
     // Store {@link Bitmap}s of {@link Book}s' thumbnail image parsed from the URL for each query
-    public static HashMap<String, Bitmap> bookCoverImgs;
+    public static final HashMap<String, Bitmap> bookCoverImgs = new HashMap<String, Bitmap>();
 
     /**
      * Returns new {@link URL} object from the given String url
@@ -101,7 +101,7 @@ public final class QueryUtils {
     public static List<Book> extractBooks(String jsonResponse) {
         List<Book> books = new ArrayList<Book>();
         // To ensure a new HashMap of images is created for each request not to let it grow too big
-        bookCoverImgs.clear();
+        if(bookCoverImgs != null) bookCoverImgs.clear();
 
         try {
             JSONObject response = new JSONObject(jsonResponse);
@@ -110,7 +110,7 @@ public final class QueryUtils {
                 JSONObject volume = items.getJSONObject(i);
                 JSONObject volumeInfo = volume.getJSONObject("volumeInfo");
 
-                String id = volumeInfo.getString("id");
+                String id = volume.getString("id");
 
                 String title = volumeInfo.getString("title");
 
@@ -154,7 +154,7 @@ public final class QueryUtils {
         try {
             images = source.getJSONObject("imageLinks");
             thumbnail = getBitmapFromUrl(images.getString("smallThumbnail"));
-            thumbnail = Bitmap.createScaledBitmap(thumbnail, 120, 120, false);
+            //thumbnail = Bitmap.createScaledBitmap(thumbnail, 120, 120, false);
         } catch (JSONException e) {
             Log.e(LOG_TAG, "Error with parsing JSON for image: ", e);
         }
