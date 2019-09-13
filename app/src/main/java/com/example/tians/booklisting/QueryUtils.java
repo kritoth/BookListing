@@ -24,7 +24,7 @@ public final class QueryUtils {
     private static final String LOG_TAG = QueryUtils.class.getName();
 
     // Store {@link Bitmap}s of {@link Book}s' thumbnail image parsed from the URL for each query
-    public static final HashMap<String, Bitmap> bookCoverImgs = new HashMap<String, Bitmap>();
+    private static final HashMap<String, Bitmap> bookCoverImgs = new HashMap<String, Bitmap>();
 
     /**
      * Returns new {@link URL} object from the given String url
@@ -115,9 +115,9 @@ public final class QueryUtils {
                 String title = volumeInfo.getString("title");
 
                 JSONArray authors = volumeInfo.getJSONArray("authors");
-                String[] authorsToBook = new String[authors.length()];
+                String[] authorsOfBook = new String[authors.length()];
                 for(int j=0;j<authors.length();j++){
-                    authorsToBook[j] = authors.getString(j);
+                    authorsOfBook[j] = authors.getString(j);
                 }
 
                 String url = volumeInfo.getString("infoLink");
@@ -130,7 +130,7 @@ public final class QueryUtils {
                     Log.e(LOG_TAG, "Error with inputstream for image: ", e);
                 }
 
-                books.add(new Book(id, title, authorsToBook, url));
+                books.add(new Book(id, title, authorsOfBook, url));
             }
         }
         catch (JSONException e) {
