@@ -3,4 +3,20 @@
     <string name="button_search">Search</string>
     <string name="search_me">Search me!</string>
     <string name="activity_result">Results</string>
+
+    <!-- Name for the Menu Item [CHAR LIMIT=NONE] -->
+    <string name="settings_menu_item">Settings</string>
+    <!-- Title for the Settings Menu [CHAR LIMIT=NONE] -->
+    <string name="settings_title">Earthquake Settings</string>
+
+    <!-- Strings For Result Preference [CHAR LIMIT=30] -->
+    <string name="settings_results_label">Results</string>
+    <string name="settings_results_key" translatable="false">result</string>
+    <string name="settings_results_default" translatable="false">@string/settings_results_min</string>
+
+
+    <string name="settings_results_min">10</string>
+    <string name="settings_results_mid25">25</string>
+    <string name="settings_results_mid50">50</string>
+    <string name="settings_results_max">100</string>
 </resources>
