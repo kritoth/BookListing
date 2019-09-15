@@ -1,7 +1,10 @@
 package com.example.tians.booklisting;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.AsyncTask;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -24,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
     private String searchTerm;
 
     // for testing purposes
-    private String googleRequestUrl;
+    private static final String GOOGLE_REQUEST_URL = "https://www.googleapis.com/books/v1/volumes?";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,10 +42,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                buildRequestTerm();
+                String query = buildRequestTerm();
 
                 BookAsyncTask asyncTask = new BookAsyncTask();
-                asyncTask.execute();
+                asyncTask.execute(query);
             }
         });
     }
@@ -67,12 +70,12 @@ public class MainActivity extends AppCompatActivity {
     /**
      * {@link AsyncTask} to perform the network request on a background thread
      */
-    private class BookAsyncTask extends AsyncTask<URL, Void, ArrayList<Book>>{
+    private class BookAsyncTask extends AsyncTask<String, Void, ArrayList<Book>>{
 
         @Override
-        protected ArrayList<Book> doInBackground(URL... urls) {
+        protected ArrayList<Book> doInBackground(String... urls) {
             // Create URL object
-            URL url = QueryUtils.createUrl(googleRequestUrl);
+            URL url = QueryUtils.createUrl(urls[0]);
 
             // Perform HTTP request to the URL and receive a JSON response back
             String jsonResponse = "";
@@ -102,8 +105,20 @@ public class MainActivity extends AppCompatActivity {
     //Build the request Url
     private String buildRequestTerm(){
         searchTerm = searchField.getText().toString().trim();
-        googleRequestUrl = "https://www.googleapis.com/books/v1/volumes?q=" + searchTerm + "&maxResults=" + "";
-        return googleRequestUrl;
+
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        // search for the users preference for magnitude
+        String results = sharedPreferences.getString(
+                getString(R.string.settings_results_key),
+                getString(R.string.settings_results_min));
+
+        Uri baseUri = Uri.parse(GOOGLE_REQUEST_URL);
+        Uri.Builder builder = baseUri.buildUpon();
+
+        builder.appendQueryParameter("q", searchTerm);
+        builder.appendQueryParameter("maxResults", results);
+
+        return builder.toString();
     }
 
     //Opens the {@link ResultActivitiy} and sends the queried ArrayList of {@link Book}s with it
