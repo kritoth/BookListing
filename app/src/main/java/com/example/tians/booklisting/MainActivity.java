@@ -1,6 +1,8 @@
 package com.example.tians.booklisting;
 
+import android.app.LoaderManager;
 import android.content.Intent;
+import android.content.Loader;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -17,8 +19,9 @@ import android.widget.TextView;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<List<Book>> {
 
     private static String LOG_TAG = MainActivity.class.getName();
 
@@ -41,11 +44,7 @@ public class MainActivity extends AppCompatActivity {
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                String query = buildRequestTerm();
-
-                BookAsyncTask asyncTask = new BookAsyncTask();
-                asyncTask.execute(query);
+                getLoaderManager().initLoader(0, null, MainActivity.this).forceLoad();
             }
         });
     }
@@ -68,41 +67,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * {@link AsyncTask} to perform the network request on a background thread
+     * Build the request Url
+     * The query parameters are built up partly from {@link SharedPreferences} chosen by the user
+     * and partly from the searched term typed in by the user
      */
-    private class BookAsyncTask extends AsyncTask<String, Void, ArrayList<Book>>{
-
-        @Override
-        protected ArrayList<Book> doInBackground(String... urls) {
-            // Create URL object
-            URL url = QueryUtils.createUrl(urls[0]);
-
-            // Perform HTTP request to the URL and receive a JSON response back
-            String jsonResponse = "";
-            try {
-                jsonResponse = QueryUtils.makeHttpRequest(url);
-            } catch (IOException e) {
-                Log.e(LOG_TAG, "Problem with Http request: ", e);
-            }
-            //Log.d(LOG_TAG, "JSON Response is: \n" + jsonResponse + "\n");
-
-            ArrayList<Book> books = (ArrayList<Book>) QueryUtils.extractBooks(jsonResponse);
-
-            //Log.d(LOG_TAG, "Books queried: " + books.size() + "\nParsed data in 1st Book is: " + books.get(0).toString());
-
-            return books;
-        }
-
-        @Override
-        protected void onPostExecute(ArrayList<Book> books) {
-            if (books == null || books.size()==0) {
-                return;
-            }
-            openResultsList(searchButton, books);
-        }
-    }
-
-    //Build the request Url
     private String buildRequestTerm(){
         searchTerm = searchField.getText().toString().trim();
 
@@ -121,7 +89,44 @@ public class MainActivity extends AppCompatActivity {
         return builder.toString();
     }
 
-    //Opens the {@link ResultActivitiy} and sends the queried ArrayList of {@link Book}s with it
+    /**
+     * Creates the {@link BookLoader} and sends the query parameters as String to it
+     * The query parameters are built up by the {@link MainActivity#buildRequestTerm()}
+     *
+     * @param id
+     * @param args
+     * @return {@link BookLoader(android.content.Context, String)}
+     */
+    @Override
+    public Loader<List<Book>> onCreateLoader(int id, Bundle args) {
+        return new BookLoader(this, buildRequestTerm());
+    }
+
+    /**
+     * It is called by the {@link BookLoader#loadInBackground()} to update the UI with the fetched data
+     * @param loader
+     * @param data is the list of {@link Book}s
+     */
+    @Override
+    public void onLoadFinished(Loader<List<Book>> loader, List<Book> data) {
+        if (data == null || data.size()==0) {
+            return;
+        }
+        openResultsList(searchButton, (ArrayList<Book>) data);
+    }
+
+    /**
+     * Resets the loader into a new empty {@link BookAdapter}
+     * @param loader is to be reseted
+     */
+    @Override
+    public void onLoaderReset(Loader<List<Book>> loader) {
+        new BookAdapter(this, 0, new ArrayList<Book>());
+    }
+
+    /**
+     * Opens the {@link ResultActivity} and sends the queried ArrayList of {@link Book}s with it
+     */
     private void openResultsList(View view, ArrayList<Book> books) {
         Intent intent = new Intent(this, ResultActivity.class);
         intent.putParcelableArrayListExtra("books", books);
